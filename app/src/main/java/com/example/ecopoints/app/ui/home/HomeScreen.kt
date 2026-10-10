@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.SentimentDissatisfied
 import androidx.compose.material.icons.filled.SentimentSatisfied
@@ -112,6 +113,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onOpenMap: () -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenProfile: () -> Unit,
     onLoggedOut: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -184,6 +186,13 @@ fun HomeScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onOpenProfile) {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            contentDescription = "Perfil",
+                            tint = EcoGreenDark
+                        )
+                    }
                     IconButton(onClick = onOpenSettings) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_settings),

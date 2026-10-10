@@ -110,6 +110,25 @@ class UserRepository(
 
     suspend fun logout() = settings.endSession()
 
+    sealed class UpdateProfileResult {
+        object Success : UpdateProfileResult()
+        object EmailTaken : UpdateProfileResult()
+    }
+
+    suspend fun updateProfile(id: Long, name: String, email: String): UpdateProfileResult {
+        val normalizedEmail = normalize(email)
+        val existingUser = userDao.findByEmail(normalizedEmail)
+        if (existingUser != null && existingUser.id != id) {
+            return UpdateProfileResult.EmailTaken
+        }
+        return try {
+            userDao.updateProfile(id, name.trim(), normalizedEmail)
+            UpdateProfileResult.Success
+        } catch (e: SQLiteConstraintException) {
+            UpdateProfileResult.EmailTaken
+        }
+    }
+
     private suspend fun savePassword(userId: Long, password: String) {
         val salt = PasswordHasher.newSalt()
         userDao.updatePassword(userId, encode(hashPassword(password, salt)), encode(salt))

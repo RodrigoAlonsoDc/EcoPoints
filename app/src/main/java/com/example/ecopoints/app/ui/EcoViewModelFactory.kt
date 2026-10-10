@@ -33,12 +33,15 @@ class EcoViewModelFactory(private val container: AppContainer) : ViewModelProvid
                     container.progressRepository,
                     container.petRepository,
                     container.challengeRepository,
-                    container.settingsRepository
+                    container.settingsRepository,
+                    container.activityLogRepository
                 )
             modelClass.isAssignableFrom(SettingsViewModel::class.java) ->
                 SettingsViewModel(container.settingsRepository, container.userRepository)
             modelClass.isAssignableFrom(MapViewModel::class.java) ->
                 MapViewModel(container.settingsRepository, container.locationProvider)
+            modelClass.isAssignableFrom(com.example.ecopoints.app.ui.profile.ProfileViewModel::class.java) ->
+                com.example.ecopoints.app.ui.profile.ProfileViewModel(container.userRepository, container.petRepository, container.settingsRepository)
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
         return viewModel as T

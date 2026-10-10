@@ -22,6 +22,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :id")
     fun observeById(id: Long): Flow<UserEntity?>
 
+    @Query("UPDATE users SET name = :name, email = :email WHERE id = :id")
+    suspend fun updateProfile(id: Long, name: String, email: String)
+
     @Query("UPDATE users SET password_hash = :hash, password_salt = :salt WHERE id = :id")
     suspend fun updatePassword(id: Long, hash: String, salt: String)
 
@@ -75,6 +78,9 @@ interface PetDao {
     @Query("SELECT * FROM pets WHERE user_id = :userId")
     suspend fun get(userId: Long): PetEntity?
 
+    @Query("UPDATE pets SET name = :name WHERE user_id = :userId")
+    suspend fun updateName(userId: Long, name: String)
+
     @Query(
         "UPDATE pets SET hunger = :hunger, happiness = :happiness, " +
             "decay_timestamp = :decayTimestamp WHERE user_id = :userId"
@@ -110,4 +116,13 @@ interface AchievementDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(unlocks: List<AchievementUnlockEntity>)
+}
+
+@Dao
+interface ActivityLogDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(log: ActivityLogEntity): Long
+
+    @Query("SELECT * FROM activity_logs WHERE user_id = :userId ORDER BY timestamp DESC")
+    fun observeAll(userId: Long): Flow<List<ActivityLogEntity>>
 }

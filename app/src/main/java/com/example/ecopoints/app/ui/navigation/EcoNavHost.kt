@@ -19,6 +19,8 @@ import com.example.ecopoints.app.ui.home.HomeScreen
 import com.example.ecopoints.app.ui.home.HomeViewModel
 import com.example.ecopoints.app.ui.map.EcoMapScreen
 import com.example.ecopoints.app.ui.map.MapViewModel
+import com.example.ecopoints.app.ui.profile.ProfileScreen
+import com.example.ecopoints.app.ui.profile.ProfileViewModel
 import com.example.ecopoints.app.ui.settings.SettingsScreen
 import com.example.ecopoints.app.ui.settings.SettingsViewModel
 import com.example.ecopoints.app.ui.welcome.WelcomeScreen
@@ -35,6 +37,7 @@ object Routes {
     const val HOME = "home"
     const val SETTINGS = "settings"
     const val MAP = "map"
+    const val PROFILE = "profile"
 
     fun login(email: String = "") = "login?$EMAIL_ARG=${Uri.encode(email)}"
     fun register(email: String = "") = "register?$EMAIL_ARG=${Uri.encode(email)}"
@@ -141,6 +144,7 @@ fun EcoNavHost(
                 viewModel = viewModel,
                 onOpenMap = { navController.navigate(Routes.MAP) },
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                onOpenProfile = { navController.navigate(Routes.PROFILE) },
                 onLoggedOut = goToLoginAfterLogout
             )
         }
@@ -156,6 +160,14 @@ fun EcoNavHost(
         composable(Routes.MAP) {
             val viewModel: MapViewModel = viewModel(factory = viewModelFactory)
             EcoMapScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.PROFILE) {
+            val viewModel: ProfileViewModel = viewModel(factory = viewModelFactory)
+            ProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )

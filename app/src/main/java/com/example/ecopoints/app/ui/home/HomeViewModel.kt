@@ -14,6 +14,7 @@ import com.example.ecopoints.app.data.repository.PetRepository
 import com.example.ecopoints.app.data.repository.ProgressRepository
 import com.example.ecopoints.app.data.repository.SettingsRepository
 import com.example.ecopoints.app.data.repository.UserRepository
+import com.example.ecopoints.app.data.repository.ActivityLogRepository
 import com.example.ecopoints.app.domain.EcoRules
 import com.example.ecopoints.app.domain.PetAction
 import com.example.ecopoints.app.domain.PetActionResult
@@ -78,7 +79,8 @@ class HomeViewModel(
     private val progressRepository: ProgressRepository,
     private val petRepository: PetRepository,
     private val challengeRepository: ChallengeRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val activityLogRepository: ActivityLogRepository
 ) : ViewModel() {
 
     /** Diálogos y acciones en curso: no vienen de la base de datos, viven solo mientras se usa la pantalla. */
@@ -196,6 +198,15 @@ class HomeViewModel(
                     )
                     vibrate()
                     checkAchievements(userId)
+                    
+                    val actionType = if (action == PetAction.FEED) "FEED_PET" else "PLAY_PET"
+                    val desc = if (action == PetAction.FEED) "Fed pet" else "Played with pet"
+                    activityLogRepository.addLog(
+                        userId = userId,
+                        actionType = actionType,
+                        description = desc,
+                        pointsChanged = -action.cost
+                    )
                 }
                 PetActionResult.NotEnoughPoints -> message(INSUFFICIENT_POINTS)
                 PetActionResult.AlreadyFull -> message("¡$name no necesita eso ahora!")
@@ -238,6 +249,17 @@ class HomeViewModel(
                 vibrate()
                 message("¡Reto superado! +$points EcoPoints")
                 checkAchievements(userId)
+                
+                val challenges = challengeRepository.getChallenges(userId)
+                val completedChallenge = challenges.find { it.id == id }
+                val title = completedChallenge?.title ?: "Unknown"
+                
+                activityLogRepository.addLog(
+                    userId = userId,
+                    actionType = "CHALLENGE_COMPLETED",
+                    description = "Completed challenge: $title",
+                    pointsChanged = points
+                )
             }
         }
     }

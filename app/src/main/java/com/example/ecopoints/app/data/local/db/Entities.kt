@@ -107,3 +107,25 @@ data class AchievementUnlockEntity(
     @ColumnInfo(name = "achievement_id") val achievementId: String,
     @ColumnInfo(name = "unlocked_at") val unlockedAt: Long
 )
+
+/** Registro de actividad (Activity Log) del usuario. */
+@Entity(
+    tableName = "activity_logs",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("user_id")]
+)
+data class ActivityLogEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "user_id") val userId: Long,
+    @ColumnInfo(name = "action_type") val actionType: String,
+    val description: String,
+    @ColumnInfo(name = "points_changed") val pointsChanged: Int = 0,
+    val timestamp: Long
+)

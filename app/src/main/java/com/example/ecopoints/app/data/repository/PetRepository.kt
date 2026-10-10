@@ -19,6 +19,10 @@ class PetRepository(private val database: EcoDatabase) {
 
     suspend fun getPet(userId: Long): PetState? = petDao.get(userId)?.toDomain()
 
+    suspend fun updateName(userId: Long, name: String) {
+        petDao.updateName(userId, name.trim())
+    }
+
     /**
      * Descuenta el desgaste acumulado desde la última revisión (aunque la app haya estado cerrada).
      * Solo cuenta periodos completos de 30 minutos; el resto se conserva para la próxima revisión.

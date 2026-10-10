@@ -15,9 +15,10 @@ import androidx.room.RoomDatabase
         ProgressEntity::class,
         PetEntity::class,
         ChallengeEntity::class,
-        AchievementUnlockEntity::class
+        AchievementUnlockEntity::class,
+        ActivityLogEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class EcoDatabase : RoomDatabase() {
@@ -26,11 +27,14 @@ abstract class EcoDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun challengeDao(): ChallengeDao
     abstract fun achievementDao(): AchievementDao
+    abstract fun activityLogDao(): ActivityLogDao
 
     companion object {
         const val NAME = "ecopoints.db"
 
         fun create(context: Context): EcoDatabase =
-            Room.databaseBuilder(context.applicationContext, EcoDatabase::class.java, NAME).build()
+            Room.databaseBuilder(context.applicationContext, EcoDatabase::class.java, NAME)
+                .fallbackToDestructiveMigration()
+                .build()
     }
 }

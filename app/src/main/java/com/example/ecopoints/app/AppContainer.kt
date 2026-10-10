@@ -5,6 +5,7 @@ import com.example.ecopoints.app.data.LocationProvider
 import com.example.ecopoints.app.data.local.datastore.EcoPreferencesStore
 import com.example.ecopoints.app.data.local.db.EcoDatabase
 import com.example.ecopoints.app.data.local.legacy.LegacyPrefsMigrator
+import com.example.ecopoints.app.data.repository.ActivityLogRepository
 import com.example.ecopoints.app.data.repository.ChallengeRepository
 import com.example.ecopoints.app.data.repository.PetRepository
 import com.example.ecopoints.app.data.repository.ProgressRepository
@@ -34,6 +35,7 @@ class AppContainer(context: Context) {
     val petRepository: PetRepository by lazy { PetRepository(database) }
     val progressRepository: ProgressRepository by lazy { ProgressRepository(database) }
     val challengeRepository: ChallengeRepository by lazy { ChallengeRepository(database) }
+    val activityLogRepository: ActivityLogRepository by lazy { ActivityLogRepository(database) }
 
     val locationProvider: LocationProvider by lazy { LocationProvider(appContext) }
 
